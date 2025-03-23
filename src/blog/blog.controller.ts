@@ -7,6 +7,8 @@ import {
   Param,
   Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { BlogDto } from './dto/blog.dto';
 import { BlogService } from './blog.service';
@@ -22,6 +24,7 @@ export class BlogController {
 
   @HttpCode(201)
   @Post('create')
+  @UsePipes(ValidationPipe)
   async create(@Body() dto: BlogDto) {
     return this.blogService.create(dto);
   }
@@ -34,6 +37,7 @@ export class BlogController {
 
   @HttpCode(200)
   @Put(':id')
+  @UsePipes(ValidationPipe)
   async update(@Body() dto: BlogDto, @Param('id') id: string) {
     return this.blogService.update(dto, id);
   }
