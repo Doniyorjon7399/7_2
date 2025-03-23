@@ -1,52 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { BlogDto } from './dto/blog.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Blog, BlogDocument } from './blog.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class BlogService {
   blogs: BlogDto[];
-  constructor() {
-    this.blogs = [
-      {
-        id: 1,
-        title: 'nestjs',
-        excerpt: 'hello',
-        description: 'hello nestjs',
-      },
-      {
-        id: 2,
-        title: 'nestjs',
-        excerpt: 'hello',
-        description: 'hello nestjs',
-      },
-      {
-        id: 3,
-        title: 'nestjs',
-        excerpt: 'hello',
-        description: 'hello nestjs',
-      },
-    ];
-  }
+  constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
   async getAllBlog() {
-    return this.blogs;
+    return await this.blogModel.find({});
   }
   async create(dto: BlogDto) {
-    delete dto.id;
-    const data: BlogDto = {
-      id: new Date().getTime(),
-      ...dto,
-    };
-    return [...this.blogs, data];
+    return await this.blogModel.create(dto);
   }
   async getById(id: string) {
-    return this.blogs.find((itim) => itim.id == Number(id));
+    return this.blogModel.findById(id);
   }
   async update(dto: BlogDto, id: string) {
-    let currentBlog = this.blogs.find((item) => item.id == Number(id));
-    currentBlog = dto;
-    return currentBlog;
+    return this.blogModel.findByIdAndUpdate(id, dto, { new: true });
   }
   async delete(id: string) {
-    const delleteUser = this.blogs.filter((item) => item.id !== Number(id));
-    return delleteUser;
+    return this.blogModel.findByIdAndDelete(id);
   }
 }
