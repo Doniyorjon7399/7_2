@@ -6,7 +6,6 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class BlogService {
-  blogs: BlogDto[];
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
   async getAllBlog() {
     return await this.blogModel.find({});
